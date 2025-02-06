@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Dice Roll Animation</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      perspective: 1000px;
+    }
+
+    .scene {
+      width: 200px;
+      height: 200px;
+      margin-bottom: 100px;
+      perspective: 600px;
+    }
+
+    .dice {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.5s ease-out;
+    }
+
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: white;
+      border: 2px solid #999;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px;
+      box-sizing: border-box;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .pip {
+      width: 20%;
+      height: 20%;
+      border-radius: 50%;
+      background: #333;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+      position: absolute;
+    }
+
+    /* Position faces */
+    .front  { transform: translateZ(100px); }
+    .back   { transform: translateZ(-100px) rotateY(180deg); }
+    .right  { transform: translateX(100px) rotateY(90deg); }
+    .left   { transform: translateX(-100px) rotateY(-90deg); }
+    .top    { transform: translateY(-100px) rotateX(90deg); }
+    .bottom { transform: translateY(100px) rotateX(-90deg); }
+
+    /* Updated pip positions */
+    .top-left {
+        top: 10%;
+        left: 10%;
+    }
+    .top-right {
+        top: 10%;
+        right: 10%;
+    }
+    .bottom-left {
+        bottom: 10%;
+        left: 10%;
+    }
+    .bottom-right {
+        bottom: 10%;
+        right: 10%;
+    }
+    .center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .center-left {
+        left: 10%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .center-right {
+        right: 10%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .top-middle {
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      position: absolute;
+      bottom: 50px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="dice" id="dice">
+      <div class="face front">
+        <div class="pip center"></div>
+      </div>
+      <div class="face back">
+        <div class="pip top-right"></div>
+        <div class="pip bottom-left"></div>
+      </div>
+      <div class="face right">
+        <div class="pip top-left"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face left">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face top">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip center"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+      <div class="face bottom">
+        <div class="pip top-left"></div>
+        <div class="pip top-right"></div>
+        <div class="pip center-left"></div>
+        <div class="pip center-right"></div>
+        <div class="pip bottom-left"></div>
+        <div class="pip bottom-right"></div>
+      </div>
+    </div>
+  </div>
+  <button id="rollButton">Roll Dice</button>
+
+  <script>
+    const dice = document.getElementById('dice');
+    const rollBtn = document.getElementById('rollButton');
+
+    function getRandomRotation() {
+      const rotations = [
+        { x: 0, y: 0, z: 0 },      // 1
+        { x: 0, y: 180, z: 0 },    // 2
+        { x: 0, y: 90, z: 0 },     // 3
+        { x: 0, y: -90, z: 0 },    // 4
+        { x: 90, y: 0, z: 0 },     // 5
+        { x: -90, y: 0, z: 0 },    // 6
+      ];
+
+      const extraSpins = Math.floor(Math.random() * 3) * 360;
+      const randomIndex = Math.floor(Math.random() * rotations.length);
+      const { x, y, z } = rotations[randomIndex];
+
+      return `rotateX(${x + extraSpins}deg) rotateY(${y + extraSpins}deg) rotateZ(${z}deg)`;
+    }
+
+    rollBtn.addEventListener('click', () => {
+      dice.style.transform = getRandomRotation();
+      rollBtn.disabled = true;
+      setTimeout(() => {
+        rollBtn.disabled = false;
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
